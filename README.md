@@ -1,88 +1,217 @@
-# 🔐 eKYC Suite
+# eKYC Suite MCP Server
 
-**Financial-grade identity verification for AI agents.** 8 capabilities in one package.
+Financial-grade eKYC / KYA toolkit for AI agents, exposed as 8 MCP tools.
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![ClawHub](https://img.shields.io/badge/ClawHub-ekyc--suite-orange)](https://clawhub.ai/wefi-ai/ekyc-suite)
+It turns face comparison, photo/video liveness detection, document OCR, and risk media labeling into standard MCP tools that can be used by agent platforms, workflow builders, and local MCP clients.
 
----
+> 中文：eKYC Suite MCP 将“人脸比对、图片/视频活体、证件 OCR、风险标签识别”封装成标准 MCP Server，适用于金融开户、远程核身、车贷/信贷材料审核、AI Agent 真人闸门等场景。
 
-## What it does
+## Why this MCP
 
-Upload a photo or video, ask a question, get structured verification results. That's it.
+AI agents are increasingly used in onboarding, lending, insurance, and compliance workflows. The missing layer is a reliable **human gate**: when an agent reaches a high-risk step, it needs to verify that the person/document/media evidence is real enough to continue.
 
-| # | Capability | What you get |
-|---|-----------|-------------|
-| 1 | **Face Comparison** | Similarity score 0-100 between two face photos |
-| 2 | **Photo Liveness** | Is this photo real or AI-generated/deepfake? (risk level 1-3) |
-| 3 | **Video Liveness** | Is this video real or deepfake? (risk level 1-3) |
-| 4 | **ID Card OCR** | Name, ID number, address from Chinese national ID card |
-| 5 | **Bank Card OCR** | Card number and expiry date |
-| 6 | **Driver's License OCR** | License number, vehicle class, validity dates |
-| 7 | **Vehicle License OCR** | Plate number, VIN, owner, engine number |
-| 8 | **Media Labeling** | 15+ risk attributes: mask, hat, coercion, tattoo, phone, in-car, etc. |
+This MCP provides that layer:
 
-## Setup
+- **Human binding**: compare a selfie with a document photo or reference photo.
+- **Anti-spoofing**: detect photo/video replay, synthetic faces, deepfake traces, and suspicious captures.
+- **Document digitization**: OCR ID cards, bank cards, driver licenses, and vehicle licenses.
+- **Scene/risk tags**: identify masks, coercion, phone use, multiple people, hotel/car/dealership scenarios, and other risk labels.
 
-### 1. Get API credentials
+## Capabilities
 
-- **Key A** (`KYC_APPID` + `KYC_SECRET`) → enables capabilities 1-7
-- **Key B** (`LABEL_APPID` + `LABEL_SECRET`) → enables capability 8
+| # | Tool | What it does | Typical use case |
+|---|------|--------------|------------------|
+| 1 | `face_compare` | Compares two face photos and returns similarity 0-100 | Selfie-to-ID match, duplicate account check |
+| 2 | `photo_liveness_detect` | Detects forged/synthetic/replayed face photos | Low-friction anti-fraud screen |
+| 3 | `video_liveness_detect` | Detects deepfake/replay/synthetic face videos | High-risk onboarding or transaction step-up |
+| 4 | `id_card_ocr` | Extracts Chinese ID card fields | Onboarding prefill, document digitization |
+| 5 | `bank_card_ocr` | Extracts bank card number/expiry | Payment binding, account verification |
+| 6 | `driver_license_ocr` | Extracts driver license fields | Auto insurance, car rental, fleet compliance |
+| 7 | `vehicle_license_ocr` | Extracts vehicle license fields | Auto loans, vehicle insurance, collateral checks |
+| 8 | `media_labeling` | Detects 15+ portrait/environment labels | Compliance scene checks, evidence review |
 
-How to get: [Tencent Cloud Console](https://console.cloud.tencent.com/faceid/access) (Key A) or contact Huiyan tech support (WeChat: `blue-201809`) for Key A + Key B.
+## Install
 
-> ⚠️ **Use TEST credentials** (free 100 calls per appid). Production IDs incur charges.
+```bash
+npm install @wefi-ai/ekyc-suite-mcp
+```
 
-### 2. Configure
+Or run from source:
 
-Copy `.env.example` to `.env` and fill in your test credentials.
+```bash
+git clone <repository-url>
+cd ekyc-suite-mcp
+npm install
+npm test
+```
 
-## How to Use
+## Credentials
 
-Install this Skill in your AI agent (OpenClaw, etc.), then just talk to it naturally:
+Create `.env` from `.env.example` and fill in credentials:
 
-| You say | What happens |
-|---------|-------------|
-| "Compare these two photos — same person?" + upload 2 photos | Returns similarity score (e.g. 96.2/100) |
-| "Is this photo AI-generated?" + upload a selfie | Returns risk level 1-3 with attack type classification |
-| "Is this video real or deepfake?" + upload a video | Detects deepfake/replay, returns risk level |
-| "Read this ID card" + upload ID card photo | Extracts name, ID number, address, ethnicity, birth date |
-| "Read this bank card number" + upload bank card photo | Extracts card number and expiry date |
-| "Read this driver's license" + upload photo | Extracts license number, name, vehicle class, validity dates |
-| "Read this vehicle license" + upload photo | Extracts plate number, VIN, owner, engine number |
-| "Check for hat and mask" + upload photo | Detects 15+ risk attributes (see table below) |
+```bash
+cp .env.example .env
+```
 
-The AI agent handles everything automatically — you just upload files and ask questions in natural language.
+You can configure one or both credential groups:
 
-## Media Labeling — Risk Attributes (Capability 8)
+- `KYC_APPID` + `KYC_SECRET`: enables tools 1-7.
+- `LABEL_APPID` + `LABEL_SECRET`: enables `media_labeling`.
 
-### Portrait Attributes — Detect user status and fraud risk
+Unconfigured tools return a clear missing-credential error instead of crashing.
 
-| Code | Attribute | Use case |
-|------|-----------|----------|
-| A09 | **Under coercion** | Anti-fraud: detect if the person is being coerced during identity verification |
-| A10 | **Unconscious / asleep** | Risk alert: detect if the person's eyes are closed or eyelids are being forced open |
-| A15 | **Critical patient** | Loan fraud prevention: flag verification attempts by critically ill individuals |
-| A11 | **On the phone** | Third-party guidance detection: someone may be coaching the user through the process |
-| A04 | **Wearing headphones** | Third-party guidance detection: hidden earpiece coaching during verification |
-| A02 | **Medical mask** | Obstruction: face partially covered, may compromise identity verification accuracy |
-| A14 | **Wearing hat** | Obstruction/disguise: may indicate attempt to alter appearance |
-| A06 | **Sunglasses** | Obstruction: eyes hidden, reduces face recognition confidence |
-| A01 | **Facial sheet mask** | Obstruction: skincare mask covering facial features |
-| A05 | **Nudity** | Compliance: flag inappropriate content during video verification |
-| A13 | **Tattoo** | Risk profiling: visible tattoo detected for feature marking |
+In hosted HTTP/SSE mode, credentials may also be supplied per request by a gateway or marketplace that supports custom headers:
 
-### Environment Attributes — Detect business scenario
+- `x-kyc-appid` + `x-kyc-secret`
+- `x-label-appid` + `x-label-secret`
 
-| Code | Attribute | Use case |
-|------|-----------|----------|
-| B02 | **Multiple people** | Fraud risk: third party present during what should be a solo verification |
-| B03 | **Inside a car** | Auto loan verification: confirm the applicant is at/in the vehicle |
-| B06 | **Hotel room** | Risk control: flag unusual verification location for loan/account applications |
-| B07 | **Car dealership** | Consumer finance compliance: verify the applicant is at the dealership |
+Environment variables take precedence over request headers. For public marketplace listings, prefer platform-managed credential headers or isolated test credentials instead of hardcoding production credentials into a shared public service.
 
-**Max 5 label codes per request.** Example: `"A09,A10,A02,B02,B03"`
+## Transport modes
+
+### 1. stdio: local MCP clients / ModelScope npm-style config
+
+```bash
+npx @wefi-ai/ekyc-suite-mcp --transport=stdio
+```
+
+Example MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "ekyc-suite": {
+      "command": "npx",
+      "args": ["-y", "@wefi-ai/ekyc-suite-mcp"],
+      "env": {
+        "MCP_TRANSPORT": "stdio",
+        "KYC_APPID": "your_test_kyc_appid",
+        "KYC_SECRET": "your_test_kyc_secret",
+        "LABEL_APPID": "your_test_label_appid",
+        "LABEL_SECRET": "your_test_label_secret"
+      }
+    }
+  }
+}
+```
+
+### 2. HTTP: cloud marketplace / Baidu MCP-SSE / Streamable HTTP
+
+```bash
+MCP_TRANSPORT=http HOST=0.0.0.0 PORT=3000 node server.mjs
+```
+
+Endpoints:
+
+- `GET /healthz` — health check
+- `POST/GET/DELETE /mcp` — Streamable HTTP MCP endpoint
+- `GET /sse` + `POST /messages?sessionId=...` — legacy HTTP+SSE MCP endpoint
+
+Baidu AppBuilder-style MCP-SSE integration should use the public URL of:
+
+```text
+https://<your-domain>/sse
+```
+
+Newer MCP clients should use:
+
+```text
+https://<your-domain>/mcp
+```
+
+## Input formats
+
+Image/video parameters accept:
+
+- Local file path: `/path/to/photo.jpg`
+- HTTPS URL: `https://example.com/photo.jpg`
+- Data URL: `data:image/jpeg;base64,...`
+- Raw base64 string
+
+Security defaults:
+
+- Max input size: 20MB by default. Override with `MAX_RAW_BYTES`.
+- HTTPS URLs only by default. For controlled internal tests, set `ALLOW_HTTP_URLS=1`.
+- Private/internal network URLs are blocked with hostname and DNS resolution checks.
+- Network calls use timeout control via `REQUEST_TIMEOUT_MS`.
+
+## Tool examples
+
+### face_compare
+
+```json
+{
+  "photo1": "/path/to/selfie.jpg",
+  "photo2": "/path/to/id_photo.jpg",
+  "sourcePhotoType": "2"
+}
+```
+
+### photo_liveness_detect / video_liveness_detect
+
+```json
+{
+  "file": "/path/to/face_photo_or_video"
+}
+```
+
+Returns `riskLevel`, `riskTag`, readable risk text, and `orderNo`.
+
+### id_card_ocr
+
+```json
+{
+  "image": "/path/to/id_card.jpg",
+  "side": "0"
+}
+```
+
+`side`: `0` = portrait/front side, `1` = national emblem/back side.
+
+### media_labeling
+
+```json
+{
+  "file": "/path/to/photo.jpg",
+  "labels": "A02,A14,B03",
+  "type": "image"
+}
+```
+
+Available label codes, max 5 per request:
+
+- Portrait: `A01` facial mask, `A02` medical mask, `A04` headphones, `A05` nudity, `A06` sunglasses, `A09` coercion, `A10` unconscious/asleep, `A11` phone, `A13` tattoo, `A14` hat, `A15` critical patient
+- Environment: `B02` multiple people, `B03` inside car, `B06` hotel room, `B07` car dealership
+
+## Test
+
+```bash
+npm test
+```
+
+The built-in test verifies:
+
+- stdio transport starts and lists all 8 tools
+- Streamable HTTP `/mcp` starts and lists all 8 tools
+- SSE `/sse` starts and lists all 8 tools
+- missing credentials return a clean MCP error instead of crashing
+
+## Security & privacy
+
+- The server does not intentionally store, cache, or retain submitted image/video/document content.
+- Credentials are read from environment variables and not hardcoded.
+- Error messages redact configured credential values.
+- Public URL inputs include SSRF protection and size checks.
+- Verification results are risk signals, not legal identity confirmation. Use human review and business rules for high-stakes decisions.
+
+## Requirements
+
+- Node.js >= 18
+- Network access to:
+  - `kyc1.qcloud.com`
+  - `kyc2.qcloud.com`
+  - `miniprogram-kyc.tencentcloudapi.com`
 
 ## License
 
-[MIT](LICENSE) — Copyright (c) 2024-2026 Wefi AI Team
+MIT

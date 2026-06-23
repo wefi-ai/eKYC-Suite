@@ -1,0 +1,17 @@
+services:
+  ekyc-suite-mcp:
+    build: .
+    image: ekyc-suite-mcp:1.1.0
+    ports:
+      - "3000:3000"
+    environment:
+      MCP_TRANSPORT: http
+      HOST: 0.0.0.0
+      PORT: 3000
+      KYC_APPID: ${KYC_APPID}
+      KYC_SECRET: ${KYC_SECRET}
+      LABEL_APPID: ${LABEL_APPID}
+      LABEL_SECRET: ${LABEL_SECRET}
+      MAX_RAW_BYTES: 20971520
+      REQUEST_TIMEOUT_MS: 15000
+      ALLOW_HTTP_URLS: 0

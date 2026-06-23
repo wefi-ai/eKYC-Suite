@@ -1,0 +1,48 @@
+{
+  "name": "@wefi-ai/ekyc-suite-mcp",
+  "version": "1.1.0",
+  "description": "Financial-grade eKYC MCP Server for AI agents: face comparison, photo/video liveness, document OCR, and risk media labeling. Supports stdio, SSE, and Streamable HTTP.",
+  "type": "module",
+  "main": "server.mjs",
+  "bin": {
+    "ekyc-suite-mcp": "./server.mjs"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "start:stdio": "node server.mjs --transport=stdio",
+    "start:http": "node server.mjs --transport=http",
+    "test": "node test.mjs"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0"
+  },
+  "keywords": [
+    "mcp",
+    "ekyc",
+    "kyc",
+    "kya",
+    "face-comparison",
+    "face-liveness",
+    "liveness-detection",
+    "deepfake-detection",
+    "ocr",
+    "identity-verification",
+    "document-verification",
+    "media-labeling",
+    "biometric",
+    "anti-fraud",
+    "fintech",
+    "compliance",
+    "onboarding",
+    "know-your-customer",
+    "know-your-agent",
+    "modelscope",
+    "baidu-appbuilder"
+  ],
+  "author": "WeFi AI Team",
+  "homepage": "https://github.com/wefi-ai/eKYC-suite",
+  "license": "MIT"
+}
