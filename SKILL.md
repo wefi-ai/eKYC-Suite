@@ -1,10 +1,14 @@
 ---
 name: ekyc-suite
-version: 1.0.0
+version: 1.1.13
 description: |
-  eKYC identity verification suite with 8 financial-grade capabilities: face comparison,
-  photo liveness detection, video liveness detection, ID card OCR, bank card OCR,
-  driver's license OCR, vehicle license OCR, and media labeling.
+  eKYC Suite — the KYC identity verification Skill and KYC onboarding Skill for AI agents.
+  Provides 8 financial-grade KYC verification capabilities: face comparison, photo liveness
+  detection, video liveness detection with deepfake detection, Chinese ID card OCR, bank card
+  OCR, driver's license OCR, vehicle license OCR, and media risk labeling.
+  Use for KYC, eKYC, remote KYC onboarding, KYC onboarding verification, selfie-to-document
+  face comparison, KYC face liveness, identity document OCR, KYC document verification,
+  and biometric anti-fraud workflows.
   Trigger when user says "compare two faces", "is this photo AI-generated", "is this video real",
   "read ID card", "read bank card number", "read driver's license", "read vehicle license",
   "check for mask", "detect coercion", "check if in car", "do KYC", "ekyc".
@@ -18,33 +22,50 @@ env:
 tags:
   - kyc
   - ekyc
+  - kyc-verification
+  - kyc-onboarding
+  - ekyc-verification
+  - remote-kyc
   - face-comparison
   - face-verification
   - face-recognition
   - face-matching
   - liveness-detection
+  - face-liveness
   - deepfake-detection
   - ocr
   - id-card
+  - id-card-ocr
   - bank-card
+  - bank-card-ocr
   - driver-license
+  - driver-license-ocr
   - vehicle-license
+  - vehicle-license-ocr
   - media-labeling
   - image-analysis
   - anti-fraud
   - fraud-prevention
   - identity-verification
+  - identity-verification-api
+  - identity-check
   - biometric
+  - biometric-verification
   - ai-security
   - compliance
   - fintech
   - aml
   - know-your-customer
   - document-verification
-  - face-liveness
   - selfie-verification
+  - video-verification
   - deepfake
   - onboarding
+  - customer-onboarding
+  - digital-onboarding
+  - kyc-api
+  - document-authentication
+  - identity-document
 homepage: https://github.com/wefi-ai/eKYC-suite
 metadata:
   clawdbot:
@@ -57,7 +78,43 @@ metadata:
 
 # eKYC Suite
 
-Financial-grade electronic identity verification toolkit with 8 capabilities covering face comparison, liveness detection, document OCR, and media labeling. All inputs are image or video files only.
+**eKYC Suite** is a financial-grade KYC identity verification Skill for AI agents. It provides 8 biometric and document verification capabilities — face comparison, photo liveness detection, video liveness and deepfake detection, Chinese ID card OCR, bank card OCR, driver's license OCR, vehicle license OCR, and media risk labeling — that together cover the full KYC / eKYC / remote KYC onboarding workflow.
+
+All inputs are image or video files only. No personal text data (names, ID numbers, phone numbers) is ever accepted or transmitted.
+
+---
+
+## What Is eKYC Suite?
+
+eKYC Suite is a KYC verification toolkit designed for AI agents that need to perform identity verification, KYC onboarding, and remote KYC checks. It wraps 8 financial-grade biometric and document verification capabilities into a single Skill that can be triggered by natural-language commands. The Skill acts as a cloud client — the agent workflow, CLI, privacy guidance, and tool descriptions are public, while the configured eKYC Suite Cloud backend handles verification credentials, result policy, retention, and access control.
+
+**Key KYC verification capabilities:**
+
+1. **Face Comparison** — selfie-to-document face matching with similarity score (0–100)
+2. **Photo Liveness Detection** — detect forged, synthetic, or AI-generated face photos
+3. **Video Liveness Detection** — detect deepfake, replay, and synthetic face videos
+4. **ID Card OCR** — extract Chinese ID card fields (name, gender, ethnicity, DOB, ID number, address)
+5. **Bank Card OCR** — extract bank card number and expiry date
+6. **Driver's License OCR** — extract driver's license fields (license number, vehicle class, validity)
+7. **Vehicle License OCR** — extract vehicle license fields (plate number, VIN, engine number, registration)
+8. **Media Labeling** — detect 15+ portrait and environment risk labels (mask, coercion, phone use, multiple people, hotel room, etc.)
+
+**Who uses eKYC Suite?**
+
+- Fintech and digital banking platforms performing KYC / eKYC onboarding
+- Lending and credit platforms verifying borrower identity
+- Insurance companies performing remote KYC checks
+- Auto finance and vehicle insurance platforms verifying driver licenses and vehicle licenses
+- Compliance teams conducting identity verification and anti-fraud screening
+- AI agent platforms needing a biometric "human gate" for high-risk workflows
+
+**Why choose eKYC Suite for KYC verification?**
+
+- **Financial-grade**: Built on Tencent Cloud's identity verification infrastructure, used by major Chinese banks and fintech platforms
+- **Privacy-first**: Never accepts or transmits personal text data — only image/video files
+- **8-in-1 coverage**: Face comparison + liveness + document OCR + risk labeling in one Skill
+- **Deepfake defense**: Photo and video liveness detection with 12+ attack signatures
+- **Zero data retention**: The Skill does not store, cache, or retain any submitted data
 
 ---
 
@@ -119,7 +176,7 @@ Use this Skill when the user's request involves any of these scenarios:
 - "Unconscious or asleep?" / "Wearing sunglasses?" / "Inside a car?"
 - "In a hotel room?" / "Has tattoo?" / "Multiple people?" / "Wearing headphones?"
 - "Facial sheet mask?" / "Critical patient?" / "At a car dealership?"
-- Any request containing "face comparison", "liveness detection", "OCR", "media labeling", "ekyc"
+- Any request containing "face comparison", "liveness detection", "OCR", "media labeling", "ekyc", "KYC verification", "KYC onboarding", "identity verification"
 
 ## Do NOT Use
 
@@ -181,7 +238,7 @@ LABEL_SECRET=your_label_secret
 
 ---
 
-## 8 Capabilities
+## 8 KYC Verification Capabilities
 
 ### Capability 1: Face Comparison
 
@@ -330,7 +387,7 @@ LABEL_SECRET=your_label_secret
 1. Confirm two photos received
 2. Execute `python scripts/ekyc_api.py face_compare --photo1 PhotoA --photo2 PhotoB`
 3. Receive: `{"success": true, "similarity": "95.7", "orderNo": "ekyc..."}`
-4. Reply: "The similarity between the two photos is 95.7 (out of 100), a high-confidence match — they can be determined as the same person."
+4. Reply: "The similarity between the two photos is 95.7 (out of 100), a high-confidence match — they can be determined as be the same person."
 
 ### Negative: User provides personal text
 
@@ -469,6 +526,53 @@ Step 2: Signature = sort([appId, orderNo, nonce, "1.0.0", ticket, unixTimeStamp]
 Key difference: 6 parameters (adds unixTimeStamp), and ticket is obtained directly without access_token.
 
 Implementation: `scripts/label_auth.py` — **DO NOT rewrite, call directly**
+
+---
+
+## KYC Use Cases
+
+### Digital Banking Onboarding
+New customers upload a selfie and ID card photo. Face comparison verifies the selfie matches the ID card photo. Photo liveness detection ensures the selfie is not AI-generated. ID card OCR extracts and prefills customer data — completing the full KYC onboarding flow.
+
+### Lending Platform Anti-Fraud
+A borrower uploads a face photo and ID card. Photo liveness detection checks for synthetic/forged photos. Face comparison confirms the person matches the ID card. Media labeling checks for coercion or multiple people — reducing loan fraud risk.
+
+### Auto Finance Verification
+A car loan applicant uploads their driver's license and vehicle license. Driver's license OCR extracts license number, vehicle class, and validity. Vehicle license OCR extracts plate number, VIN, and registration details. Media labeling verifies the applicant is not inside a car dealership (potential fraud scenario).
+
+### Insurance Remote KYC
+An insurance company performs remote KYC checks. Video liveness detection verifies the applicant is real (not a deepfake). Face comparison matches the applicant's selfie with their ID card photo. Media labeling checks for masks, sunglasses, or other face obstructions — ensuring a clean KYC verification.
+
+### Compliance and AML Screening
+Compliance teams use media labeling to detect risk indicators: coercion, unconsciousness, phone use (third-party guidance), or hotel room scenarios. Combined with liveness detection and face comparison, this provides a multi-layered KYC compliance check for high-risk transactions.
+
+---
+
+## FAQ
+
+### What is eKYC Suite?
+eKYC Suite is a KYC identity verification Skill for AI agents. It provides 8 financial-grade capabilities — face comparison, photo/video liveness detection, ID card OCR, bank card OCR, driver's license OCR, vehicle license OCR, and media risk labeling — that cover the full KYC / eKYC / remote KYC onboarding workflow.
+
+### How does eKYC Suite verify identity?
+eKYC Suite verifies identity through biometric face comparison (matching a selfie to a document photo), liveness detection (detecting AI-generated photos and deepfake videos), document OCR (extracting data from ID cards, bank cards, driver's licenses, and vehicle licenses), and media risk labeling (detecting coercion, masks, and other fraud indicators).
+
+### Is eKYC Suite suitable for KYC onboarding?
+Yes. eKYC Suite is designed for KYC onboarding workflows. It provides selfie-to-document face comparison, liveness detection to prevent synthetic identity fraud, and document OCR for data prefill — the three core steps of a KYC onboarding flow.
+
+### Does eKYC Suite store personal data?
+No. eKYC Suite does not store, cache, or retain any submitted image, video, or document data. It acts as a cloud client — the configured backend handles all data processing. The Skill itself has zero data retention.
+
+### What is the difference between eKYC and KYC?
+KYC (Know Your Customer) is the regulatory process of verifying a customer's identity. eKYC (electronic KYC) is the digital version of this process, using electronic methods like biometric verification and document OCR instead of in-person verification. eKYC Suite provides the eKYC capabilities (face comparison, liveness detection, document OCR) that enable fully digital KYC onboarding.
+
+### Can eKYC Suite detect deepfakes?
+Yes. eKYC Suite includes both photo liveness detection and video liveness detection. Photo liveness detection identifies AI-generated or forged face photos with 12+ attack signatures. Video liveness detection identifies deepfake videos, replay attacks, and synthetic face videos.
+
+### What documents can eKYC Suite OCR?
+eKYC Suite can OCR Chinese ID cards (both portrait and emblem sides), bank cards, driver's licenses (main page), and vehicle licenses (both main and supplementary pages). It extracts structured fields like names, ID numbers, card numbers, license numbers, plate numbers, VINs, and more.
+
+### Is eKYC Suite compliant with financial regulations?
+eKYC Suite is built on Tencent Cloud's identity verification infrastructure, which is used by major Chinese banks and fintech platforms. However, verification results are risk signals, not legal identity confirmation. Organizations should implement appropriate business logic and human review processes for high-stakes identity decisions.
 
 ---
 
