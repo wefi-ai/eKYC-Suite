@@ -1,34 +1,44 @@
-# eKYC Suite MCP Server
+# eKYC Suite MCP Server — KYC Identity Verification for AI Agents
 
-Financial-grade eKYC / KYA toolkit for AI agents, exposed as 8 MCP tools.
+**Financial-grade eKYC / KYC identity verification MCP Server for AI agents, exposed as 8 MCP tools.**
 
-It turns face comparison, photo/video liveness detection, document OCR, and risk media labeling into standard MCP tools that can be used by agent platforms, workflow builders, and local MCP clients.
+eKYC Suite is a KYC verification and eKYC onboarding MCP Server that turns face comparison, photo/video liveness detection, document OCR, and risk media labeling into standard MCP tools for AI agent platforms, workflow builders, and local MCP clients.
 
-> 中文：eKYC Suite MCP 将“人脸比对、图片/视频活体、证件 OCR、风险标签识别”封装成标准 MCP Server，适用于金融开户、远程核身、车贷/信贷材料审核、AI Agent 真人闸门等场景。
+> 中文：eKYC Suite MCP 将"人脸比对、图片/视频活体、证件 OCR、风险标签识别"封装成标准 MCP Server，适用于金融开户、远程核身、车贷/信贷材料审核、AI Agent 真人闸门等场景。
 
-## Why this MCP
+---
+
+## What Is eKYC Suite MCP?
+
+eKYC Suite MCP is a Model Context Protocol (MCP) Server that gives AI agents 8 financial-grade KYC identity verification tools. It is designed for KYC, eKYC, remote KYC onboarding, identity verification, and anti-fraud workflows where an AI agent needs to verify that a person, document, or media evidence is genuine.
+
+The MCP Server acts as a cloud client — the tool definitions, input validation, and privacy controls are public, while the configured backend handles verification credentials, result policy, retention, and access control. The server does not store, cache, or retain any submitted data.
+
+---
+
+## Why This KYC MCP Server
 
 AI agents are increasingly used in onboarding, lending, insurance, and compliance workflows. The missing layer is a reliable **human gate**: when an agent reaches a high-risk step, it needs to verify that the person/document/media evidence is real enough to continue.
 
 This MCP provides that layer:
 
-- **Human binding**: compare a selfie with a document photo or reference photo.
-- **Anti-spoofing**: detect photo/video replay, synthetic faces, deepfake traces, and suspicious captures.
-- **Document digitization**: OCR ID cards, bank cards, driver licenses, and vehicle licenses.
-- **Scene/risk tags**: identify masks, coercion, phone use, multiple people, hotel/car/dealership scenarios, and other risk labels.
+- **Human binding**: compare a selfie with a document photo or reference photo (face comparison)
+- **Anti-spoofing**: detect photo/video replay, synthetic faces, deepfake traces, and suspicious captures (liveness detection)
+- **Document digitization**: OCR ID cards, bank cards, driver licenses, and vehicle licenses for KYC data prefill
+- **Scene/risk tags**: identify masks, coercion, phone use, multiple people, hotel/car/dealership scenarios, and other risk labels
 
 ## Capabilities
 
-| # | Tool | What it does | Typical use case |
-|---|------|--------------|------------------|
+| # | Tool | What it does | Typical KYC use case |
+|---|------|--------------|----------------------|
 | 1 | `face_compare` | Compares two face photos and returns similarity 0-100 | Selfie-to-ID match, duplicate account check |
-| 2 | `photo_liveness_detect` | Detects forged/synthetic/replayed face photos | Low-friction anti-fraud screen |
-| 3 | `video_liveness_detect` | Detects deepfake/replay/synthetic face videos | High-risk onboarding or transaction step-up |
-| 4 | `id_card_ocr` | Extracts Chinese ID card fields | Onboarding prefill, document digitization |
+| 2 | `photo_liveness_detect` | Detects forged/synthetic/replayed face photos | Low-friction KYC anti-fraud screen |
+| 3 | `video_liveness_detect` | Detects deepfake/replay/synthetic face videos | High-risk KYC onboarding or transaction step-up |
+| 4 | `id_card_ocr` | Extracts Chinese ID card fields | KYC onboarding prefill, document digitization |
 | 5 | `bank_card_ocr` | Extracts bank card number/expiry | Payment binding, account verification |
 | 6 | `driver_license_ocr` | Extracts driver license fields | Auto insurance, car rental, fleet compliance |
 | 7 | `vehicle_license_ocr` | Extracts vehicle license fields | Auto loans, vehicle insurance, collateral checks |
-| 8 | `media_labeling` | Detects 15+ portrait/environment labels | Compliance scene checks, evidence review |
+| 8 | `media_labeling` | Detects 15+ portrait/environment labels | KYC compliance scene checks, evidence review |
 
 ## Install
 
@@ -39,8 +49,8 @@ npm install @wefi-ai/ekyc-suite-mcp
 Or run from source:
 
 ```bash
-git clone <repository-url>
-cd ekyc-suite-mcp
+git clone https://github.com/wefi-ai/eKYC-Suite
+cd eKYC-Suite
 npm install
 npm test
 ```
@@ -55,8 +65,8 @@ cp .env.example .env
 
 You can configure one or both credential groups:
 
-- `KYC_APPID` + `KYC_SECRET`: enables tools 1-7.
-- `LABEL_APPID` + `LABEL_SECRET`: enables `media_labeling`.
+- `KYC_APPID` + `KYC_SECRET`: enables tools 1-7 (face comparison, liveness detection, document OCR)
+- `LABEL_APPID` + `LABEL_SECRET`: enables `media_labeling` (risk label detection)
 
 Unconfigured tools return a clear missing-credential error instead of crashing.
 
@@ -137,7 +147,7 @@ Security defaults:
 
 ## Tool examples
 
-### face_compare
+### face_compare — KYC Face Verification
 
 ```json
 {
@@ -147,7 +157,9 @@ Security defaults:
 }
 ```
 
-### photo_liveness_detect / video_liveness_detect
+Returns similarity score (0-100). Score ≥80 = high confidence match (false acceptance rate ~1/10,000).
+
+### photo_liveness_detect / video_liveness_detect — KYC Anti-Fraud
 
 ```json
 {
@@ -155,9 +167,9 @@ Security defaults:
 }
 ```
 
-Returns `riskLevel`, `riskTag`, readable risk text, and `orderNo`.
+Returns `riskLevel`, `riskTag`, readable risk text, and `orderNo`. Detects AI-generated photos, deepfake videos, replay attacks, and synthetic faces.
 
-### id_card_ocr
+### id_card_ocr — KYC Document Digitization
 
 ```json
 {
@@ -168,7 +180,7 @@ Returns `riskLevel`, `riskTag`, readable risk text, and `orderNo`.
 
 `side`: `0` = portrait/front side, `1` = national emblem/back side.
 
-### media_labeling
+### media_labeling — KYC Risk Labeling
 
 ```json
 {
@@ -202,7 +214,7 @@ The built-in test verifies:
 - Credentials are read from environment variables and not hardcoded.
 - Error messages redact configured credential values.
 - Public URL inputs include SSRF protection and size checks.
-- Verification results are risk signals, not legal identity confirmation. Use human review and business rules for high-stakes decisions.
+- Verification results are risk signals, not legal identity confirmation. Use human review and business rules for high-stakes KYC decisions.
 
 ## Requirements
 
@@ -211,6 +223,34 @@ The built-in test verifies:
   - `kyc1.qcloud.com`
   - `kyc2.qcloud.com`
   - `miniprogram-kyc.tencentcloudapi.com`
+
+## KYC Use Cases
+
+- **Digital banking onboarding**: selfie-to-ID face comparison + liveness detection + ID card OCR
+- **Lending anti-fraud**: photo liveness + face comparison + coercion detection
+- **Auto finance**: driver's license OCR + vehicle license OCR + dealership scene check
+- **Insurance remote KYC**: video liveness + face comparison + mask/obstruction detection
+- **AML compliance**: media labeling for coercion, multiple people, and risk scenario detection
+
+## FAQ
+
+### What is eKYC Suite MCP?
+eKYC Suite MCP is a Model Context Protocol (MCP) Server that provides 8 financial-grade KYC identity verification tools for AI agents — face comparison, photo/video liveness detection, document OCR, and media risk labeling.
+
+### How does eKYC Suite MCP verify identity?
+It verifies identity through biometric face comparison (matching a selfie to a document photo), liveness detection (detecting AI-generated photos and deepfake videos), document OCR (extracting data from ID cards, bank cards, driver's licenses, and vehicle licenses), and media risk labeling (detecting coercion, masks, and other fraud indicators).
+
+### Is eKYC Suite MCP suitable for KYC onboarding?
+Yes. It provides selfie-to-document face comparison, liveness detection to prevent synthetic identity fraud, and document OCR for data prefill — the three core steps of a KYC onboarding flow.
+
+### Does eKYC Suite MCP store personal data?
+No. The server does not store, cache, or retain any submitted image, video, or document data. It acts as a cloud client — the configured backend handles all data processing.
+
+### Can eKYC Suite MCP detect deepfakes?
+Yes. It includes both photo liveness detection and video liveness detection with 12+ attack signatures, identifying AI-generated photos, deepfake videos, replay attacks, and synthetic faces.
+
+### What documents can eKYC Suite MCP OCR?
+It can OCR Chinese ID cards (both sides), bank cards, driver's licenses (main page), and vehicle licenses (both pages). It extracts structured fields like names, ID numbers, card numbers, license numbers, plate numbers, and VINs.
 
 ## License
 
