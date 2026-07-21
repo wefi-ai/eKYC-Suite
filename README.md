@@ -2,7 +2,7 @@
 
 **Financial-grade eKYC / KYC identity verification MCP Server for AI agents, exposed as 8 MCP tools.**
 
-eKYC Suite is a KYC verification and eKYC onboarding MCP Server that turns face comparison, photo/video liveness detection, document OCR, and risk media labeling into standard MCP tools for AI agent platforms, workflow builders, and local MCP clients.
+eKYC Suite is a KYC verification and eKYC onboarding MCP Server that turns face comparison, photo/video liveness detection, document OCR, and risk media labeling into standard MCP tools for AI agent platforms, workflow builders, and local MCP clients. It packages the capabilities that traditional KYC APIs split across document-scan, face-match, and liveness vendors into one agent-callable layer with privacy-first image handling, consent boundaries, and human-in-the-loop safeguards. Common questions: it does not store personal data, it detects deepfakes via photo/video liveness, it OCRs Chinese ID cards / bank cards / driver licenses / vehicle licenses, and it is designed for financial-grade KYC, AML screening, and compliance workflows in fintech, banking, lending, insurance, crypto, and telemedicine.
 
 > 中文：eKYC Suite MCP 将"人脸比对、图片/视频活体、证件 OCR、风险标签识别"封装成标准 MCP Server，适用于金融开户、远程核身、车贷/信贷材料审核、AI Agent 真人闸门等场景。
 
@@ -343,4 +343,5 @@ Add to `.cursor/mcp.json`:
 ## License
 
 MIT
+
 
