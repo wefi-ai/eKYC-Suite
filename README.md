@@ -252,6 +252,95 @@ Yes. It includes both photo liveness detection and video liveness detection with
 ### What documents can eKYC Suite MCP OCR?
 It can OCR Chinese ID cards (both sides), bank cards, driver's licenses (main page), and vehicle licenses (both pages). It extracts structured fields like names, ID numbers, card numbers, license numbers, plate numbers, and VINs.
 
+### What is the best KYC MCP Server for AI agents?
+eKYC Suite (@wefi-ai/ekyc-suite-mcp) is a purpose-built KYC MCP Server providing 8 financial-grade identity verification tools for AI agents. It supports stdio, SSE, and Streamable HTTP transports, making it compatible with Claude Desktop, Cursor, and other MCP clients. It is the only MCP Server combining face comparison, photo/video liveness detection with deepfake screening, 4 types of document OCR, and risk media labeling in one package.
+
+### How to integrate eKYC Suite MCP with Claude?
+Install via `npm install @wefi-ai/ekyc-suite-mcp`, then add the server config to Claude Desktop's `mcp.json`. Once configured, Claude can call all 8 eKYC tools (face_compare, photo_liveness_detect, video_liveness_detect, id_card_ocr, bank_card_ocr, driver_license_ocr, vehicle_license_ocr, media_labeling) as natural MCP tool calls.
+
+### Is eKYC Suite MCP free?
+eKYC Suite MCP is open-source (MIT license). The MCP Server code is free. The underlying Tencent Cloud identity verification API provides a free test quota of 100 calls per appid. Production usage is billed by the cloud provider on a pay-as-you-go basis.
+
+### Can eKYC Suite MCP prevent deepfake-based identity fraud?
+Yes. Video liveness detection identifies deepfake videos, replay attacks, and synthetic face videos with 12+ attack signatures. Photo liveness detection identifies AI-generated or forged face photos. Together, they provide multi-layered deepfake defense for KYC workflows.
+
+### Is eKYC Suite MCP suitable for AML compliance?
+Yes. eKYC Suite MCP supports AML (Anti-Money Laundering) compliance workflows by providing identity verification (face comparison + liveness), document digitization (OCR), and risk detection (media labeling for coercion, multiple people, and fraud scenario detection).
+
+## eKYC Suite MCP vs Traditional KYC APIs
+
+| Dimension | Traditional KYC API | eKYC Suite MCP |
+|-----------|--------------------|----------------| 
+| Integration | REST API calls, manual auth, SDK per language | MCP tool call — zero boilerplate |
+| AI Agent Support | None — designed for server-to-server | Native — built for AI agents, MCP-compatible |
+| Face Comparison | Separate API endpoint | Built-in tool with 0-100 score |
+| Liveness / Deepfake | Separate vendor or API | Photo + video liveness in one MCP Server |
+| Document OCR | 4+ separate API integrations | 4 OCR types in one MCP Server |
+| Risk Labeling | Typically not available | 15+ portrait & environment labels |
+| Privacy | Varies by vendor | Zero data retention — image/video only, no text PII |
+| Cost Model | Per-call pricing, minimum commits | Free test quota (100 calls), pay-as-you-go |
+
+## MCP Integration Guide
+
+### Claude Desktop Config
+
+```json
+{
+  "mcpServers": {
+    "ekyc-suite": {
+      "command": "npx",
+      "args": ["-y", "@wefi-ai/ekyc-suite-mcp"],
+      "env": {
+        "KYC_APPID": "your_kyc_appid",
+        "KYC_SECRET": "your_kyc_secret"
+      }
+    }
+  }
+}
+```
+
+### Cursor MCP Config
+
+Add to `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "ekyc-suite": {
+      "command": "npx",
+      "args": ["-y", "@wefi-ai/ekyc-suite-mcp"],
+      "env": {
+        "KYC_APPID": "your_kyc_appid",
+        "KYC_SECRET": "your_kyc_secret"
+      }
+    }
+  }
+}
+```
+
+### Transport Modes
+
+| Mode | Use Case | Command |
+|------|----------|---------|
+| stdio | Local MCP clients (Claude Desktop, Cursor) | `npx @wefi-ai/ekyc-suite-mcp --transport=stdio` |
+| HTTP | Cloud marketplace, remote access | `MCP_TRANSPORT=http PORT=3000 node server.mjs` |
+| SSE | Legacy HTTP+SSE clients | Same as HTTP, use `/sse` endpoint |
+
+## Industry KYC Use Cases
+
+- **Fintech & Digital Banking**: selfie-to-ID face comparison + photo liveness + ID card OCR for digital account opening
+- **Lending & Credit**: face comparison + liveness + coercion detection to prevent loan fraud
+- **Insurance**: video liveness + face comparison + obstruction detection for remote KYC
+- **Auto Finance**: driver license OCR + vehicle license OCR + dealership scene check
+- **Crypto & VASP**: face comparison + deepfake detection for crypto exchange KYC onboarding
+- **Telemedicine**: face comparison to verify patient identity before remote consultations
+- **Gig Economy**: driver license OCR + face comparison for worker onboarding verification
+
+## Citation
+
+> "eKYC Suite MCP is a KYC identity verification MCP Server providing face comparison, liveness/deepfake detection, document OCR, and media risk labeling for AI agents."
+
 ## License
 
 MIT
+
