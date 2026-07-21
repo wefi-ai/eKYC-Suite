@@ -1,6 +1,6 @@
 {
   "name": "@wefi-ai/ekyc-suite-mcp",
-  "version": "1.1.15",
+  "version": "1.1.16",
   "description": "Financial-grade KYC identity verification MCP Server for AI agents. 8 eKYC tools: face comparison, photo/video liveness detection with deepfake screening, ID card OCR, bank card OCR, driver license OCR, vehicle license OCR, and risk media labeling. Supports stdio, SSE, and Streamable HTTP for KYC onboarding, remote KYC verification, synthetic identity fraud prevention, and agentic anti-fraud workflows. Compatible with Claude Desktop, Cursor, and all MCP clients.",
   "type": "module",
   "main": "server.mjs",
